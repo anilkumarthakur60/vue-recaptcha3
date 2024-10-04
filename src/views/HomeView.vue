@@ -58,7 +58,12 @@ const verifyRecaptcha = async () => {
       new URLSearchParams({
         secret: '6LfQNKUaAAAAAFowxwdQUCbTZMJzs9BBIEq5uXEZ',
         response: recaptchaToken.value
-      })
+      }),
+      {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
     )
     console.log('verifyResponse', response)
     verifyResponse.value = response
