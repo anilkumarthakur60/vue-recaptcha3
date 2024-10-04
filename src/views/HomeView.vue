@@ -37,6 +37,7 @@ const showMessage = (message: string, duration: number = 1000) => {
 
 const copyToken = async () => {
   try {
+    await navigator.clipboard.writeText(recaptchaToken.value)
     showMessage('Token has been copied to clipboard')
   } catch (err) {
     console.error('Failed to copy token: ', err)
