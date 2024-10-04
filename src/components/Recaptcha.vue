@@ -57,7 +57,7 @@ onMounted(() => {
 </script>
 
 <style>
-.grecaptcha-badge {
+/* .grecaptcha-badge {
   display: none !important;
-}
+} */
 </style>
