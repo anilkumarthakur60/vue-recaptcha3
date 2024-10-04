@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Recaptcha from '@/components/Recaptcha.vue'
 import { ref } from 'vue'
-
+import axios from 'axios'
 const recaptchaToken = ref<string>('')
 const recaptchaComponent = ref<InstanceType<typeof Recaptcha> | null>(null)
 const loading = ref<boolean>(false)
@@ -50,6 +50,23 @@ const handleRegenerate = async () => {
   recaptchaComponent.value?.loadRecaptcha()
   loading.value = false
 }
+const verifyResponse = ref<any>(null)
+const verifyRecaptcha = async () => {
+  try {
+    const response = await axios.post(
+      'https://www.google.com/recaptcha/api/siteverify',
+      new URLSearchParams({
+        secret: '6LfQNKUaAAAAAFowxwdQUCbTZMJzs9BBIEq5uXEZ',
+        response: recaptchaToken.value
+      })
+    )
+    console.log('verifyResponse', response)
+    verifyResponse.value = response
+  } catch (error) {
+    console.error('There was a problem with the verification:', error)
+    verifyResponse.value = error
+  }
+}
 </script>
 
 <template>
@@ -68,9 +85,14 @@ const handleRegenerate = async () => {
           <i class="fa fa-refresh" :class="{ 'fa-spin': loading }"></i>
           {{ loading ? 'Loading...' : 'Regenerate' }}
         </button>
+        <button class="buttonload btn btn-warning" @click="verifyRecaptcha" :disabled="loading">
+          <i class="fa fa-check" :class="{ 'fa-spin': loading }"></i>
+          {{ loading ? 'Loading...' : 'Verify Recaptcha' }}
+        </button>
       </div>
       <div class="recaptcha-token">{{ recaptchaToken }}</div>
     </div>
+    <div class="recaptcha-verify-response">{{ verifyResponse }}</div>
   </div>
 </template>
 
