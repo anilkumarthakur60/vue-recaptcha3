@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, onMounted } from 'vue'
+import { ref, defineProps, defineEmits, onMounted, onBeforeUnmount } from 'vue'
 const props = withDefaults(
   defineProps<{
     siteKey?: string
@@ -51,8 +51,20 @@ const loadRecaptcha = () => {
 
 defineExpose({ loadRecaptcha })
 
+let recaptchaInterval: ReturnType<typeof setInterval> | null = null
+onBeforeUnmount(() => {
+  if (recaptchaInterval) clearInterval(recaptchaInterval)
+})
+
+const startRecaptchaInterval = () => {
+  recaptchaInterval = setInterval(() => {
+    executeRecaptcha()
+  }, 1000 * 60) // Refresh every 60 seconds (adjust as needed)
+}
+
 onMounted(() => {
   loadRecaptcha()
+  startRecaptchaInterval() // Start refreshing the token when the component mounts
 })
 </script>
 
