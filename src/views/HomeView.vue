@@ -35,10 +35,10 @@ const showMessage = (message: string, duration: number = 1000) => {
   }, duration)
 }
 
-const copyToken = async () => {
+const copyToken = async (message: string = 'Token has been copied to clipboard') => {
   try {
     await navigator.clipboard.writeText(recaptchaToken.value)
-    showMessage('Token has been copied to clipboard')
+    showMessage(message)
   } catch (err) {
     console.error('Failed to copy token: ', err)
   }
@@ -49,27 +49,27 @@ const handleRegenerate = async () => {
   loading.value = true
   recaptchaComponent.value?.loadRecaptcha()
   loading.value = false
+  setTimeout(() => {
+    showMessage('Token has been regenerated and copied to clipboard')
+  }, 1000)
 }
 const verifyResponse = ref<any>(null)
 const verifyRecaptcha = async () => {
+  loading.value = true
   try {
     const response = await axios.post(
-      'https://www.google.com/recaptcha/api/siteverify',
-      new URLSearchParams({
-        secret: '6LfQNKUaAAAAAFowxwdQUCbTZMJzs9BBIEq5uXEZ',
-        response: recaptchaToken.value
-      }),
+      'https://express-recaptcha-verify.vercel.app/verify-captcha',
       {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
+        captcha_token: recaptchaToken.value
       }
     )
-    console.log('verifyResponse', response)
-    verifyResponse.value = response
+    console.log('verifyResponse', response.data)
+    verifyResponse.value = response.data
+    loading.value = false
   } catch (error) {
     console.error('There was a problem with the verification:', error)
     verifyResponse.value = error
+    loading.value = false
   }
 }
 </script>
@@ -82,7 +82,11 @@ const verifyRecaptcha = async () => {
         <span>Recaptcha Token:</span>
       </div>
       <div class="recaptcha-token-buttons">
-        <button class="buttonload btn btn-primary" @click="copyToken" :disabled="loading">
+        <button
+          class="buttonload btn btn-primary"
+          @click="() => copyToken('Token has been copied to clipboard')"
+          :disabled="loading"
+        >
           <i class="fa fa-copy" :class="{ 'fa-spin': loading }"></i>
           {{ loading ? 'Loading...' : 'Copy' }}
         </button>
@@ -97,7 +101,9 @@ const verifyRecaptcha = async () => {
       </div>
       <div class="recaptcha-token">{{ recaptchaToken }}</div>
     </div>
-    <div class="recaptcha-verify-response">{{ verifyResponse }}</div>
+    <div class="recaptcha-verify-response">
+      <pre>{{ verifyResponse }}</pre>
+    </div>
   </div>
 </template>
 
