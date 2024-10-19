@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Recaptcha from '@/components/Recaptcha.vue'
-import { ref } from 'vue'
+import Recaptcha from '@/components/RecaptchaV3.vue'
+import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 const recaptchaToken = ref<string>('')
 const recaptchaComponent = ref<InstanceType<typeof Recaptcha> | null>(null)
@@ -49,10 +49,12 @@ const handleRegenerate = async () => {
   loading.value = true
   recaptchaComponent.value?.loadRecaptcha()
   loading.value = false
-  setTimeout(() => {
-    showMessage('Token has been regenerated and copied to clipboard')
-  }, 1000)
 }
+watch(recaptchaToken, (newValue: string) => {
+  if (newValue) {
+    copyToken('Token has been regenerated and copied to clipboard')
+  }
+})
 const verifyResponse = ref<any>(null)
 const verifyRecaptcha = async () => {
   loading.value = true
@@ -72,6 +74,8 @@ const verifyRecaptcha = async () => {
     loading.value = false
   }
 }
+
+onMounted(handleRegenerate)
 </script>
 
 <template>
