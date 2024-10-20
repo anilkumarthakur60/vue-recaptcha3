@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import Recaptcha from '@/components/RecaptchaV3.vue'
+import { RecaptchaV3 } from '../package/components'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
-const recaptchaToken = ref<string>('')
-const recaptchaComponent = ref<InstanceType<typeof Recaptcha> | null>(null)
+import useRecaptcha from '../package/hooks/useRecaptcha'
+const recaptchaComponent = ref<InstanceType<typeof RecaptchaV3> | null>(null)
 const loading = ref<boolean>(false)
 
-const handleVerification = (token: string) => {
-  console.log('Recaptcha token:', token)
-  recaptchaToken.value = token
+const { loadRecaptcha, recaptchaToken } = useRecaptcha()
+
+const handleTokenUpdate = (token: string) => {
+  // recaptchaToken.value = token
+  console.log('token', token)
 }
 
 const showMessage = (message: string, duration: number = 1000) => {
@@ -45,9 +47,8 @@ const copyToken = async (message: string = 'Token has been copied to clipboard')
 }
 
 const handleRegenerate = async () => {
-  console.log('Regenerating Recaptcha token')
   loading.value = true
-  recaptchaComponent.value?.loadRecaptcha()
+  await loadRecaptcha()
   loading.value = false
 }
 watch(recaptchaToken, (newValue: string) => {
@@ -80,7 +81,7 @@ onMounted(handleRegenerate)
 
 <template>
   <div class="recaptcha-container">
-    <Recaptcha @verified="handleVerification" ref="recaptchaComponent" />
+    <RecaptchaV3 @update:token="handleTokenUpdate" ref="recaptchaComponent" />
     <div class="recaptcha-token-container">
       <div class="recaptcha-token-label">
         <span>Recaptcha Token:</span>
