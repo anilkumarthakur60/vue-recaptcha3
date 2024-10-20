@@ -25,8 +25,8 @@
   },
   "scripts": {
     "dev": "vite --config vite.config.prod.ts",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "build:prod": "vue-tsc && vite build",
+    "build:prod": "vue-tsc && vite build --config vite.config.prod.ts",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "test:unit": "vitest",
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
