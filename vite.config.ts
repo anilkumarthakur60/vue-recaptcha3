@@ -13,7 +13,7 @@ export default defineConfig({
     copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, 'src/package/index.ts'),
-      name: 'Vue3Recaptcha', // Add this line
+      name: '@anilkumarthakur/vue3-recaptcha', // Updated package name
       fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
