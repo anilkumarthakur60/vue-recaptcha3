@@ -2,18 +2,25 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import path from 'path'
-
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import VueDevTools from 'vite-plugin-vue-devtools'
-
+// import { viteStaticCopy } from 'vite-plugin-static-copy'
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueJsx(), VueDevTools(), dts()],
+  plugins: [
+    vue(),
+    vueJsx(),
+    dts()
+    // viteStaticCopy({
+    //   targets: [
+    //     { src: 'src/package/global.scss', dest: '' }
+    //   ]
+    // })
+  ],
   build: {
     copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, 'src/package/index.ts'),
-      name: '@anilkumarthakur/vue3-recaptcha', // Updated package name
+      name: '@anilkumarthakur/vue3-recaptcha',
       fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
