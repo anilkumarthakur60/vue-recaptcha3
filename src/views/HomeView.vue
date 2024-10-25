@@ -51,11 +51,6 @@ const handleRegenerate = async () => {
   loading.value = false
 }
 
-const checkIfRecaptchaLoaded = () => {
-  const isLoaded = recaptchaComponent.value?.isRecaptchaLoaded() || false
-  showMessage(`Recaptcha loaded: ${isLoaded}`)
-}
-
 const verifyResponse = ref<any>(null)
 
 const verifyRecaptcha = async () => {
@@ -105,9 +100,6 @@ onMounted(handleRegenerate)
         <button class="buttonload btn btn-warning" @click="verifyRecaptcha" :disabled="loading">
           <i class="fa fa-check" :class="{ 'fa-spin': loading }"></i>
           {{ loading ? 'Loading...' : 'Verify Recaptcha' }}
-        </button>
-        <button class="buttonload btn btn-info" @click="checkIfRecaptchaLoaded" :disabled="loading">
-          <i class="fa fa-info-circle"></i> Is Recaptcha Loaded?
         </button>
       </div>
       <div class="recaptcha-token">{{ recaptchaToken }}</div>
@@ -203,6 +195,7 @@ onMounted(handleRegenerate)
   background-color: #f1f1f1;
   border-radius: 4px;
 }
+
 .grecaptcha-badges {
   display: none !important;
 }

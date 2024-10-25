@@ -4,15 +4,8 @@
 
 <script setup lang="ts">
 import { computed, inject } from 'vue'
-import { RecaptchaPluginTypes } from '../types/recaptchaPluginTypes'
-const props = withDefaults(
-  defineProps<{
-    siteKey?: string
-    action?: string
-    modelValue?: string
-  }>(),
-  {}
-)
+import { RecaptchaPluginOptions, RecaptchaComponentProps } from '../types/recaptchaPluginTypes'
+const props = defineProps<RecaptchaComponentProps>()
 
 const recaptchaToken = computed({
   get: () => props.modelValue,
@@ -69,7 +62,7 @@ defineExpose({
   recaptchaToken
 })
 
-const recaptcha = inject<RecaptchaPluginTypes>('recaptcha')
+const recaptcha = inject<RecaptchaPluginOptions>('recaptcha')
 
 declare global {
   interface Window {
