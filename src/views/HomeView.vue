@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { RecaptchaV3 } from '../package/components'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import axios from 'axios'
-import useRecaptcha from '../package/hooks/useRecaptcha'
+
 const recaptchaComponent = ref<InstanceType<typeof RecaptchaV3> | null>(null)
 const loading = ref<boolean>(false)
-
-const { loadRecaptcha, recaptchaToken } = useRecaptcha()
+const recaptchaToken = ref<string>('')
 
 const handleTokenUpdate = (token: string) => {
-  // recaptchaToken.value = token
-  console.log('token', token)
+  copyToken('Token has been regenerated and copied to clipboard')
+  console.log('Token updated:', token)
 }
 
 const showMessage = (message: string, duration: number = 1000) => {
@@ -48,15 +47,18 @@ const copyToken = async (message: string = 'Token has been copied to clipboard')
 
 const handleRegenerate = async () => {
   loading.value = true
-  await loadRecaptcha()
+  await recaptchaComponent.value?.loadRecaptcha()
   loading.value = false
 }
-watch(recaptchaToken, (newValue: string) => {
-  if (newValue) {
-    copyToken('Token has been regenerated and copied to clipboard')
-  }
-})
+
+const checkIfRecaptchaLoaded = () => {
+  const isLoaded = recaptchaComponent.value?.isRecaptchaLoaded() || false
+  showMessage(`Recaptcha loaded: ${isLoaded}`)
+}
+
+
 const verifyResponse = ref<any>(null)
+
 const verifyRecaptcha = async () => {
   loading.value = true
   try {
@@ -66,12 +68,10 @@ const verifyRecaptcha = async () => {
         captcha_token: recaptchaToken.value
       }
     )
-    console.log('verifyResponse', response.data)
     verifyResponse.value = response.data
-    loading.value = false
   } catch (error) {
-    console.error('There was a problem with the verification:', error)
     verifyResponse.value = error
+  } finally {
     loading.value = false
   }
 }
@@ -81,17 +81,14 @@ onMounted(handleRegenerate)
 
 <template>
   <div class="recaptcha-container">
-    <RecaptchaV3 @update:token="handleTokenUpdate" ref="recaptchaComponent" />
+    <RecaptchaV3 v-model="recaptchaToken" @update:model-value="handleTokenUpdate" ref="recaptchaComponent" />
     <div class="recaptcha-token-container">
       <div class="recaptcha-token-label">
         <span>Recaptcha Token:</span>
       </div>
       <div class="recaptcha-token-buttons">
-        <button
-          class="buttonload btn btn-primary"
-          @click="() => copyToken('Token has been copied to clipboard')"
-          :disabled="loading"
-        >
+        <button class="buttonload btn btn-primary" @click="() => copyToken('Token has been copied to clipboard')"
+          :disabled="loading">
           <i class="fa fa-copy" :class="{ 'fa-spin': loading }"></i>
           {{ loading ? 'Loading...' : 'Copy' }}
         </button>
@@ -102,6 +99,9 @@ onMounted(handleRegenerate)
         <button class="buttonload btn btn-warning" @click="verifyRecaptcha" :disabled="loading">
           <i class="fa fa-check" :class="{ 'fa-spin': loading }"></i>
           {{ loading ? 'Loading...' : 'Verify Recaptcha' }}
+        </button>
+        <button class="buttonload btn btn-info" @click="checkIfRecaptchaLoaded" :disabled="loading">
+          <i class="fa fa-info-circle"></i> Is Recaptcha Loaded?
         </button>
       </div>
       <div class="recaptcha-token">{{ recaptchaToken }}</div>
