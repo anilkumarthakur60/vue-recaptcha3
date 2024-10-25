@@ -4,13 +4,15 @@
 
 <script setup lang="ts">
 import { computed, inject } from 'vue'
-import { RecaptchaOptions } from '..';
-const props = withDefaults(defineProps<{
-  siteKey?: string
-  action?: string
-  modelValue?: string
-}>(), {
-})
+import { RecaptchaPluginTypes } from '../types/recaptchaPluginTypes'
+const props = withDefaults(
+  defineProps<{
+    siteKey?: string
+    action?: string
+    modelValue?: string
+  }>(),
+  {}
+)
 
 const recaptchaToken = computed({
   get: () => props.modelValue,
@@ -34,7 +36,9 @@ function initializeRecaptcha() {
 
 async function executeRecaptcha() {
   return window.grecaptcha
-    .execute(props.siteKey ?? recaptcha?.siteKey ?? '', { action: props.action ?? recaptcha?.action ?? '' })
+    .execute(props.siteKey ?? recaptcha?.siteKey ?? '', {
+      action: props.action ?? recaptcha?.action ?? ''
+    })
     .then((token: string) => {
       recaptchaToken.value = token
       return token
@@ -58,27 +62,21 @@ async function loadRecaptcha() {
   })
 }
 
-
-function isRecaptchaLoaded() {
-  return !!window.grecaptcha
-}
 defineExpose({
   loadRecaptcha,
   executeRecaptcha,
   initializeRecaptcha,
-  recaptchaToken,
-  isRecaptchaLoaded
+  recaptchaToken
 })
 
-const recaptcha = inject<RecaptchaOptions>('recaptcha')
-console.log(recaptcha)
+const recaptcha = inject<RecaptchaPluginTypes>('recaptcha')
 
-
-
-
-</script>
-<style>
-.grecaptcha-badges {
-  display: none !important;
+declare global {
+  interface Window {
+    grecaptcha: {
+      ready: (callback: () => void) => void
+      execute: (siteKey: string, options: { action: string }) => Promise<string>
+    }
+  }
 }
-</style>
+</script>

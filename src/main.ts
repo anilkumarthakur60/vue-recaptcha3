@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import recaptchaPlugin from './package'
+import { recaptchaPlugin } from './package'
 
 const app = createApp(App)
 

@@ -1,14 +1,9 @@
 import type { App } from 'vue'
 import RecaptchaV3 from './components/RecaptchaV3.vue'
-import useRecaptcha from '../hooks/useRecaptcha'
-
-interface RecaptchaOptions {
-  siteKey?: string
-  action?: string
-}
+import { RecaptchaPluginTypes } from './types/recaptchaPluginTypes'
 
 const recaptchaPlugin = {
-  install: (app: App, options: RecaptchaOptions = {}) => {
+  install: (app: App, options: RecaptchaPluginTypes = {}) => {
     app.component('RecaptchaV3', RecaptchaV3)
     app.provide('recaptcha', {
       siteKey: options.siteKey,
@@ -17,5 +12,4 @@ const recaptchaPlugin = {
   }
 }
 
-export default recaptchaPlugin
-export { RecaptchaV3, useRecaptcha, recaptchaPlugin, type RecaptchaOptions }
+export { RecaptchaV3, recaptchaPlugin, type RecaptchaPluginTypes }

@@ -56,7 +56,6 @@ const checkIfRecaptchaLoaded = () => {
   showMessage(`Recaptcha loaded: ${isLoaded}`)
 }
 
-
 const verifyResponse = ref<any>(null)
 
 const verifyRecaptcha = async () => {
@@ -81,14 +80,21 @@ onMounted(handleRegenerate)
 
 <template>
   <div class="recaptcha-container">
-    <RecaptchaV3 v-model="recaptchaToken" @update:model-value="handleTokenUpdate" ref="recaptchaComponent" />
+    <RecaptchaV3
+      v-model="recaptchaToken"
+      @update:model-value="handleTokenUpdate"
+      ref="recaptchaComponent"
+    />
     <div class="recaptcha-token-container">
       <div class="recaptcha-token-label">
         <span>Recaptcha Token:</span>
       </div>
       <div class="recaptcha-token-buttons">
-        <button class="buttonload btn btn-primary" @click="() => copyToken('Token has been copied to clipboard')"
-          :disabled="loading">
+        <button
+          class="buttonload btn btn-primary"
+          @click="() => copyToken('Token has been copied to clipboard')"
+          :disabled="loading"
+        >
           <i class="fa fa-copy" :class="{ 'fa-spin': loading }"></i>
           {{ loading ? 'Loading...' : 'Copy' }}
         </button>
@@ -196,5 +202,8 @@ onMounted(handleRegenerate)
   padding: 10px;
   background-color: #f1f1f1;
   border-radius: 4px;
+}
+.grecaptcha-badges {
+  display: none !important;
 }
 </style>
