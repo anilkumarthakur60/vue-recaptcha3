@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anilkumarthakur/vue3-recaptcha": "^0.0.4",
+    "@anilkumarthakur/vue3-recaptcha": "^0.0.6",
     "vue": "^3.5.12",
     "vue3-google-signin": "^2.0.0"
   },
