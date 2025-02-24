@@ -71,7 +71,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^26.0.0",
     "npm-run-all2": "^7.0.2",
-    "prettier": "^3.5.1",
+    "prettier": "^3.5.2",
     "sass-embedded": "^1.85.0",
     "start-server-and-test": "^2.0.10",
     "ts-jest": "^29.2.5",
