@@ -82,7 +82,7 @@
     "vite-plugin-vue-devtools": "^7.7.6",
     "vitest": "^3.2.3",
     "vue-tsc": "^2.2.10",
-    "axios": "^1.9.0",
+    "axios": "^1.10.0",
     "pinia": "^3.0.3",
     "vue-router": "^4.5.1"
   }
